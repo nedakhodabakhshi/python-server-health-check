@@ -5,12 +5,12 @@ from datetime import datetime
 import psutil
 
 def ping_server(host: str) -> bool:
-    """Return True if host responds to a single ping (cross-platform)."""
+    # -n روی ویندوز، -c روی لینوکس/مک
     count_flag = "-n" if platform.system().lower().startswith("win") else "-c"
     try:
         result = subprocess.run(
             ["ping", count_flag, "1", host],
-            stdout=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,  # خروجی پینگ رو خاموش می‌کنه
             stderr=subprocess.DEVNULL,
             timeout=5,
         )
@@ -19,23 +19,24 @@ def ping_server(host: str) -> bool:
         return False
 
 def check_local_health():
-    cpu = psutil.cpu_percent(interval=1)
-    mem = psutil.virtual_memory().percent
-    disk = psutil.disk_usage('/').percent
-    return cpu, mem, disk
+    return (
+        psutil.cpu_percent(interval=1),
+        psutil.virtual_memory().percent,
+        psutil.disk_usage("/").percent if platform.system() != "Windows"
+        else psutil.disk_usage("C:\\").percent
+    )
 
 def main():
-    # read servers list
     with open("servers.txt", "r", encoding="utf-8") as f:
-        servers = [line.strip() for line in f if line.strip()]
+        servers = [s.strip() for s in f if s.strip()]
 
     os.makedirs("logs", exist_ok=True)
-    report_path = f"logs/report-{datetime.now().strftime('%Y-%m-%d')}.txt"
+    report = f"logs/report-{datetime.now().strftime('%Y-%m-%d')}.txt"
 
-    with open(report_path, "w", encoding="utf-8") as log:
+    with open(report, "w", encoding="utf-8") as log:
         for server in servers:
-            header = f"--- Checking {server} ---"
-            print(header); log.write(header + "\n")
+            hdr = f"--- Checking {server} ---"
+            print(hdr); log.write(hdr + "\n")
 
             if ping_server(server):
                 print("Server is UP ✅"); log.write("Server is UP ✅\n")
@@ -43,9 +44,9 @@ def main():
                 line = f"CPU: {cpu}% | Memory: {mem}% | Disk: {disk}%"
                 print(line); log.write(line + "\n\n")
             else:
-                print("Server is DOWN ❌"); log.write("Server is DOWN ❌\n\n")
+                print("Server is DOWN "); log.write("Server is DOWN \n\n")
 
-    print(f"\nReport saved to: {report_path}")
+    print(f"\nReport saved to: {report}")
 
 if __name__ == "__main__":
     main()
