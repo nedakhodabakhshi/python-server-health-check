@@ -33,8 +33,8 @@ def main():
                 log.write(f"CPU Usage: {cpu}%\nMemory Usage: {memory}%\nDisk Usage: {disk}%\n")
                 print(f"CPU Usage: {cpu}%\nMemory Usage: {memory}%\nDisk Usage: {disk}%")
             else:
-                log.write("Server is DOWN ❌\n")
-                print("Server is DOWN ❌")
+                log.write("Server is DOWN \n")
+                print("Server is DOWN ")
 
     print(f"\nReport saved to: {report_file}")
 
