@@ -17,7 +17,7 @@ Install the required dependencies using:
 ```bash
 pip install -r requirements.txt
 
-How to Run
+## How to Run
 
 Clone this repository:
 git clone https://github.com/YOUR-USERNAME/python-server-health-check.git
