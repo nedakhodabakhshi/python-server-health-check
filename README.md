@@ -23,7 +23,7 @@ Install the required dependencies using:
 
 Clone this repository:
 
-- git clone https://github.com/YOUR-USERNAME/python-server-health-check.git
+- git clone https://github.com/nedakhodabakhshi/python-server-health-check.git
 - cd python-server-health-check
 
 
