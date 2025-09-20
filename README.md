@@ -23,7 +23,7 @@ Install the required dependencies using:
 
 Clone this repository:
 
-git clone https://github.com/YOUR-USERNAME/python-server-health-check.git
+git clone https://github.com/YOUR-USERNAME/python-server-health-check.git.
 cd python-server-health-check
 
 
@@ -34,8 +34,8 @@ pip install -r requirements.txt
 
 Add your servers to servers.txt:
 
-127.0.0.1
-google.com
+127.0.0.1.
+google.com.
 
 
 Run the script:
