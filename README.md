@@ -19,7 +19,7 @@ Install the required dependencies using:
 
 ```
 
-How to Run
+## How to Run
 
 Clone this repository:
 
