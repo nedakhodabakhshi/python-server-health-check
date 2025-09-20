@@ -5,12 +5,12 @@ from datetime import datetime
 import psutil
 
 def ping_server(host: str) -> bool:
-    # -n روی ویندوز، -c روی لینوکس/مک
+   
     count_flag = "-n" if platform.system().lower().startswith("win") else "-c"
     try:
         result = subprocess.run(
             ["ping", count_flag, "1", host],
-            stdout=subprocess.DEVNULL,  # خروجی پینگ رو خاموش می‌کنه
+            stdout=subprocess.DEVNULL,  
             stderr=subprocess.DEVNULL,
             timeout=5,
         )
@@ -39,7 +39,7 @@ def main():
             print(hdr); log.write(hdr + "\n")
 
             if ping_server(server):
-                print("Server is UP ✅"); log.write("Server is UP ✅\n")
+                print("Server is UP "); log.write("Server is UP \n")
                 cpu, mem, disk = check_local_health()
                 line = f"CPU: {cpu}% | Memory: {mem}% | Disk: {disk}%"
                 print(line); log.write(line + "\n\n")
