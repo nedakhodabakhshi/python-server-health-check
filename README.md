@@ -14,8 +14,9 @@ It pings each server and checks basic metrics like **CPU**, **Memory**, and **Di
 Make sure you have **Python 3.6+** installed.  
 Install the required dependencies using:
 
-  ```bash
-   pip install -r requirements.txt
+```bash
+ pip install -r requirements.txt
+
 
 ---
 How to Run
