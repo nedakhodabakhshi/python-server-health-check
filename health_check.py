@@ -1,43 +1,51 @@
 import os
 import platform
-import psutil
+import subprocess
 from datetime import datetime
+import psutil
 
-# Function to check if server is reachable
-def ping_server(server):
-    response = os.system(f"ping -c 1 {server} > /dev/null 2>&1")
-    return response == 0
+def ping_server(host: str) -> bool:
+    """Return True if host responds to a single ping (cross-platform)."""
+    count_flag = "-n" if platform.system().lower().startswith("win") else "-c"
+    try:
+        result = subprocess.run(
+            ["ping", count_flag, "1", host],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=5,
+        )
+        return result.returncode == 0
+    except Exception:
+        return False
 
-# Function to check local server health
 def check_local_health():
     cpu = psutil.cpu_percent(interval=1)
-    memory = psutil.virtual_memory().percent
+    mem = psutil.virtual_memory().percent
     disk = psutil.disk_usage('/').percent
-    return cpu, memory, disk
+    return cpu, mem, disk
 
-# Main function
 def main():
-    with open("servers.txt") as file:
-        servers = file.read().splitlines()
+    # read servers list
+    with open("servers.txt", "r", encoding="utf-8") as f:
+        servers = [line.strip() for line in f if line.strip()]
 
-    report_file = f"logs/report-{datetime.now().strftime('%Y-%m-%d')}.txt"
     os.makedirs("logs", exist_ok=True)
+    report_path = f"logs/report-{datetime.now().strftime('%Y-%m-%d')}.txt"
 
-    with open(report_file, "w") as log:
+    with open(report_path, "w", encoding="utf-8") as log:
         for server in servers:
-            log.write(f"\n--- Checking {server} ---\n")
-            print(f"\n--- Checking {server} ---")
+            header = f"--- Checking {server} ---"
+            print(header); log.write(header + "\n")
 
             if ping_server(server):
-                cpu, memory, disk = check_local_health()
-                log.write(f"CPU Usage: {cpu}%\nMemory Usage: {memory}%\nDisk Usage: {disk}%\n")
-                print(f"CPU Usage: {cpu}%\nMemory Usage: {memory}%\nDisk Usage: {disk}%")
+                print("Server is UP ✅"); log.write("Server is UP ✅\n")
+                cpu, mem, disk = check_local_health()
+                line = f"CPU: {cpu}% | Memory: {mem}% | Disk: {disk}%"
+                print(line); log.write(line + "\n\n")
             else:
-                log.write("Server is DOWN \n")
-                print("Server is DOWN ")
+                print("Server is DOWN ❌"); log.write("Server is DOWN ❌\n\n")
 
-    print(f"\nReport saved to: {report_file}")
+    print(f"\nReport saved to: {report_path}")
 
 if __name__ == "__main__":
     main()
-
